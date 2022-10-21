@@ -1,6 +1,6 @@
 const app = require('./src/routes/index');
-const port = 3000
+require('dotenv/config');
 
-app.listen(port, ()=>{
+app.listen(process.env.SERVER_PORT, ()=>{
   console.log("Servidor MantisBot") ;
 })
