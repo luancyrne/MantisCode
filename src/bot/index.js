@@ -1,6 +1,6 @@
 //Modulos e importações de config
 require('dotenv/config');
-const { REST, Routes, Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { REST, Routes, Client, GatewayIntentBits } = require('discord.js');
 const cheerio = require('cheerio');
 const request = require('request');
 const cron = require('node-cron');
