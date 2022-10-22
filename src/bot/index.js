@@ -13,7 +13,7 @@ const cron = require('node-cron');
 const requestProm = (page) => {
   return new Promise((resolve, reject) => {
     request(`https://programathor.com.br/jobs-city/remoto?contract_type=CLT&page=${page}`, async (err, response, body) => {
-      console.log(`Puxando pagina 1`)
+      console.log(`Puxando pagina ${page}`)
       const $ = cheerio.load(body)
       let vagas = []
 
@@ -86,51 +86,8 @@ client.on('ready', () => {
 //Através desta função também e possível criar e responder mensagens diretas no canal definido
 client.on('interactionCreate', async interaction => {
 
-  cron.schedule('* * 23 * * *', async () => {
-    const vagas = await Promise.all([requestProm(1)]).then((result) => {
-      return result.flat()
-    })
 
-    const vagasEmb = vagas.map((vagas) => {
-      return {
-        ...vagas,
-        color: 5763719,
-        author: {
-          name: 'ProgramaThor',
-          icon_url: 'https://programathor.com.br/assets/thor-91ae45b43c0df483b3ada7728d09a3458d40119e8cdb47abadd9f15a0f62172c.png',
-          url: 'https://programathor.com.br',
-        },
-        footer: {
-          text: 'Todas as vagas são retiradas do site ProgramaThor, todas as vagas presentes aqui são para trabalho remoto e devem ser consultadas diretamente no site responsável'
-        },
-
-      }
-    })
-
-    //Modelo de mensagem definido para ser enviado
-    let finalMessage = {
-      color: 5763719,
-      title: `----------------Verifique atentamente a vaga----------------`,
-      author: {
-        name: 'MantisBot',
-        icon_url: 'https://cdn.discordapp.com/avatars/1032816629475721286/99c7a34b6a165cdbcf8496436badf0f7.webp',
-      },
-      description: "A cada 24 horas as vagas serão verificadas novamente",
-      footer: {
-        text: 'Para consultar mais vagas digite o comando /mais'
-      },
-    };
-
-
-    //Esta função ira capturar em qual canal o bot foi iniciado e enviara cada um dos items pro mesmo canal no formato que desejar
-
-    for (let index = 0; index < vagasEmb.length; index++) {
-      //Fique atento para a formatação do texto, textos grandes podem não respeitar as linhas no discord
-      await interaction.channel.send({ embeds: [vagasEmb[index]] })
-    }
-  })
-
-  const vagas = await Promise.all([requestProm(1)]).then((result) => {
+  const vagas = await Promise.all([requestProm('1'), requestProm('2'), requestProm('3'), requestProm('4'), requestProm('5')]).then((result) => {
     return result.flat()
   })
 
@@ -150,19 +107,6 @@ client.on('interactionCreate', async interaction => {
     }
   })
 
-  //Modelo de mensagem definido para ser enviado
-  let finalMessage = {
-    color: 5763719,
-    title: `----------------Verifique atentamente a vaga----------------`,
-    author: {
-      name: 'MantisBot',
-      icon_url: 'https://cdn.discordapp.com/avatars/1032816629475721286/99c7a34b6a165cdbcf8496436badf0f7.webp',
-    },
-    description: "A cada 24 horas as vagas serão verificadas novamente",
-    footer: {
-      text: 'Para consultar mais vagas digite o comando /mais'
-    },
-  };
 
 
   //Esta função ira capturar em qual canal o bot foi iniciado e enviara cada um dos items pro mesmo canal no formato que desejar
@@ -176,6 +120,37 @@ client.on('interactionCreate', async interaction => {
   //Aqui verificamos se a mensagem recebida e um comando ou apenas uma mensagem de texto
   if (!interaction.isChatInputCommand()) return;
 
+  cron.schedule('* * 23 * * *', async () => {
+    const vagas = await Promise.all([requestProm('1'), requestProm('2'), requestProm('3'), requestProm('4'), requestProm('5')]).then((result) => {
+      return result.flat()
+    })
+
+    const vagasEmb = vagas.map((vagas) => {
+      return {
+        ...vagas,
+        color: 5763719,
+        author: {
+          name: 'ProgramaThor',
+          icon_url: 'https://programathor.com.br/assets/thor-91ae45b43c0df483b3ada7728d09a3458d40119e8cdb47abadd9f15a0f62172c.png',
+          url: 'https://programathor.com.br',
+        },
+        footer: {
+          text: 'Todas as vagas são retiradas do site ProgramaThor, todas as vagas presentes aqui são para trabalho remoto e devem ser consultadas diretamente no site responsável'
+        },
+
+      }
+    })
+
+
+    //Esta função ira capturar em qual canal o bot foi iniciado e enviara cada um dos items pro mesmo canal no formato que desejar
+
+    for (let index = 0; index < vagasEmb.length; index++) {
+      //Fique atento para a formatação do texto, textos grandes podem não respeitar as linhas no discord
+      await interaction.channel.send({ embeds: [vagasEmb[index]] })
+
+
+    }
+  })
 }
 );
 
