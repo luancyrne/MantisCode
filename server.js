@@ -12,3 +12,5 @@ require('dotenv/config');
 // http.listen(process.env.SERVER_PORT, () => {
 //   console.log("Servidor MantisBot");
 // })
+
+console.log("Iniciado")
