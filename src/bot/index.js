@@ -85,35 +85,39 @@ client.on('ready', () => {
 //A função abaixo utiliza o evento intectionCreate para interagir com mensagens recebidas ao bot em algum canal
 //Através desta função também e possível criar e responder mensagens diretas no canal definido
 client.on('interactionCreate', async interaction => {
+  let initialized = false
 
 
-  const vagas = await Promise.all([requestProm('1'), requestProm('2'), requestProm('3'), requestProm('4'), requestProm('5')]).then((result) => {
-    return result.flat()
-  })
-
-  const vagasEmb = vagas.map((vagas) => {
-    return {
-      ...vagas,
-      color: 5763719,
-      author: {
-        name: 'ProgramaThor',
-        icon_url: 'https://programathor.com.br/assets/thor-91ae45b43c0df483b3ada7728d09a3458d40119e8cdb47abadd9f15a0f62172c.png',
-        url: 'https://programathor.com.br',
-      },
-      footer: {
-        text: 'Todas as vagas são retiradas do site ProgramaThor, todas as vagas presentes aqui são para trabalho remoto e devem ser consultadas diretamente no site responsável'
-      },
-
+  if(initialized === false){
+    initialized = true
+    const vagas = await Promise.all([requestProm('1'), requestProm('2'), requestProm('3'), requestProm('4'), requestProm('5')]).then((result) => {
+      return result.flat()
+    })
+  
+    const vagasEmb = vagas.map((vagas) => {
+      return {
+        ...vagas,
+        color: 5763719,
+        author: {
+          name: 'ProgramaThor',
+          icon_url: 'https://programathor.com.br/assets/thor-91ae45b43c0df483b3ada7728d09a3458d40119e8cdb47abadd9f15a0f62172c.png',
+          url: 'https://programathor.com.br',
+        },
+        footer: {
+          text: 'Todas as vagas são retiradas do site ProgramaThor, todas as vagas presentes aqui são para trabalho remoto e devem ser consultadas diretamente no site responsável'
+        },
+  
+      }
+    })
+  
+  
+  
+    //Esta função ira capturar em qual canal o bot foi iniciado e enviara cada um dos items pro mesmo canal no formato que desejar
+  
+    for (let index = 0; index < vagasEmb.length; index++) {
+      //Fique atento para a formatação do texto, textos grandes podem não respeitar as linhas no discord
+      await interaction.channel.send({ embeds: [vagasEmb[index]] })
     }
-  })
-
-
-
-  //Esta função ira capturar em qual canal o bot foi iniciado e enviara cada um dos items pro mesmo canal no formato que desejar
-
-  for (let index = 0; index < vagasEmb.length; index++) {
-    //Fique atento para a formatação do texto, textos grandes podem não respeitar as linhas no discord
-    await interaction.channel.send({ embeds: [vagasEmb[index]] })
   }
 
 
